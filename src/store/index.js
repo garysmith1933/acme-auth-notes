@@ -3,7 +3,12 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import axios from 'axios';
 
+const GET_NOTES = 'GET_NOTES'
+
 const notes = (state = [], action)=> {
+  if(action.type === "GET_NOTES") {
+    return action.notes
+  }
   return state;
 };
 
@@ -14,6 +19,21 @@ const auth = (state = {}, action)=> {
   return state;
 };
 
+
+const loadNotes = ()=> {
+  return async(dispatch) => {
+    const token = window.localStorage.getItem('token')
+    
+    if(token) {
+      const response = await axios.get('/api/notes', {
+        headers: {
+          authorization: token
+        }
+      })
+     dispatch({type: GET_NOTES, notes: response.data})
+    }
+  }
+}
 const logout = ()=> {
   window.localStorage.removeItem('token');
   return {
@@ -52,6 +72,6 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 );
 
-export { attemptLogin, signIn, logout };
+export { attemptLogin, signIn, logout, loadNotes };
 
 export default store;

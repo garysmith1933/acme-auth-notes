@@ -20,6 +20,9 @@ const Note = conn.define('note', {
   text: STRING
 })
 
+Note.belongsTo(User)
+User.hasMany(Note)
+
 User.addHook('beforeSave', async(user)=> {
   if(user.changed('password')){
     const hashed = await bcrypt.hash(user.password, 3);

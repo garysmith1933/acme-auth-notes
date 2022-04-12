@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-const Notes = ()=> {
+const Notes = (props)=> {
+console.log(props.notes)
   return (
     <div>
       <Link to='/home'>Home</Link>
@@ -13,4 +14,8 @@ const Notes = ()=> {
   );
 };
 
-export default connect()(Notes);
+const mapStateToProps = (state) => {
+  return state
+}
+
+export default connect(mapStateToProps)(Notes);
