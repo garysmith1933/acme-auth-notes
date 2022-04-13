@@ -4,10 +4,16 @@ import logger from 'redux-logger';
 import axios from 'axios';
 
 const GET_NOTES = 'GET_NOTES'
+const CREATE_NOTE = 'CREATE_NOTE'
+const DELETE_NOTES = 'DELETE_NOTES'
 
 const notes = (state = [], action)=> {
   if(action.type === "GET_NOTES") {
     return action.notes
+  }
+  
+  if(action.type === 'DELETE_NOTES') {
+    return state.filter(note => note.id !== action.note.id)
   }
   return state;
 };
@@ -34,6 +40,18 @@ const loadNotes = ()=> {
     }
   }
 }
+  const deleteNotes = (note) => {
+  return async(dispatch) => {
+    const token = window.localStorage.getItem('token');
+    await axios.delete(`/api/notes/${note.id}`, {
+      headers: {
+        authorization: token
+      }
+    });
+    dispatch({type: DELETE_NOTES, note})
+  }
+}
+
 const logout = ()=> {
   window.localStorage.removeItem('token');
   return {
@@ -72,6 +90,6 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 );
 
-export { attemptLogin, signIn, logout, loadNotes };
+export { attemptLogin, signIn, logout, loadNotes, deleteNotes };
 
 export default store;
